@@ -1,0 +1,1322 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lasmi's Collection - Toko Online</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #fff8fa;
+}
+.pink {
+  background: #e879a5;
+}
+.pink-text {
+  color: #d65389;
+}
+.product-card {
+  transition: .3s;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+}
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="bg-white shadow-md sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto p-4 flex justify-between items-center gap-3">
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-pink-600">
+        Lasmi's Collection
+      </h1>
+      <p class="text-xs text-gray-500">Belanja mudah dan praktis ❤️</p>
+    </div>
+
+    <button onclick="showCart()"
+      class="pink text-white px-4 py-2 rounded-full">
+      🛒 Keranjang (<span id="cartCount">0</span>)
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="text-center py-16 px-4"
+  style="background:linear-gradient(135deg,#fce7f0,#f9c9dc)">
+  <h2 class="text-3xl md:text-5xl font-bold text-pink-800">
+    Welcome to Lasmi's Collection
+  </h2>
+
+  <p class="mt-4 text-gray-700">
+    Temukan berbagai produk favoritmu dengan harga terjangkau!
+  </p>
+
+  <a href="#produk"
+    class="inline-block mt-6 bg-pink-600 text-white px-7 py-3 rounded-full">
+    Belanja Sekarang
+  </a>
+</section>
+
+<!-- KEUNGGULAN -->
+<section class="max-w-6xl mx-auto grid grid-cols-3 gap-3 px-4 py-8 text-center">
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-2xl">🛍️</div>
+    <b class="text-sm">Banyak Pilihan</b>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-2xl">💰</div>
+    <b class="text-sm">Harga Terjangkau</b>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-2xl">📱</div>
+    <b class="text-sm">Pesan via WA</b>
+  </div>
+</section>
+
+<!-- KATALOG PRODUK -->
+<section id="produk" class="max-w-7xl mx-auto px-4 py-8">
+
+  <h2 class="text-3xl font-bold text-center text-pink-700 mb-2">
+    Katalog Produk
+  </h2>
+
+  <p class="text-center text-gray-500 mb-7">
+    Pilih produk yang kamu inginkan!
+  </p>
+
+  <!-- PENCARIAN -->
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="🔍 Cari nama produk..."
+    oninput="displayProducts()"
+    class="w-full p-3 border rounded-xl mb-4 bg-white"
+  >
+
+  <!-- FILTER -->
+  <div class="flex flex-wrap justify-center gap-2 mb-7">
+    <button onclick="setCategory('semua')" class="filter-btn pink text-white px-4 py-2 rounded-full">
+      Semua
+    </button>
+
+    <button onclick="setCategory('makanan')" class="filter-btn bg-white px-4 py-2 rounded-full">
+      Makanan
+    </button>
+
+    <button onclick="setCategory('minuman')" class="filter-btn bg-white px-4 py-2 rounded-full">
+      Minuman
+    </button>
+
+    <button onclick="setCategory('pakaian')" class="filter-btn bg-white px-4 py-2 rounded-full">
+      Pakaian
+    </button>
+
+    <button onclick="setCategory('aksesoris')" class="filter-btn bg-white px-4 py-2 rounded-full">
+      Aksesoris
+    </button>
+  </div>
+
+  <p id="productCount" class="text-sm text-gray-500 mb-4"></p>
+
+  <div id="productList"
+    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+  </div>
+
+</section>
+
+<!-- KERANJANG -->
+<div id="cartModal"
+  class="hidden fixed inset-0 bg-black/50 z-50 p-3 overflow-y-auto">
+
+  <div class="bg-white max-w-lg mx-auto mt-8 rounded-2xl p-5">
+
+    <div class="flex justify-between items-center">
+      <h2 class="text-2xl font-bold text-pink-600">
+        🛒 Keranjang Belanja
+      </h2>
+
+      <button onclick="closeCart()" class="text-xl">✖</button>
+    </div>
+
+    <div id="cartItems" class="my-5"></div>
+
+    <div class="border-t pt-4">
+      <div class="flex justify-between text-lg font-bold">
+        <span>Total Belanja</span>
+        <span class="text-pink-600">
+          Rp <span id="total">0</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- DATA PEMBELI -->
+    <div class="mt-5 space-y-3">
+      <h3 class="font-bold text-lg">Data Pembeli</h3>
+
+      <input
+        type="text"
+        id="nama"
+        placeholder="Nama lengkap"
+        class="border p-3 w-full rounded-lg"
+      >
+
+      <input
+        type="tel"
+        id="telepon"
+        placeholder="Nomor WhatsApp pembeli"
+        class="border p-3 w-full rounded-lg"
+      >
+
+      <textarea
+        id="alamat"
+        placeholder="Alamat lengkap pengiriman"
+        class="border p-3 w-full rounded-lg"
+        rows="3">
+      </textarea>
+
+      <textarea
+        id="catatan"
+        placeholder="Catatan pesanan (opsional)"
+        class="border p-3 w-full rounded-lg"
+        rows="2">
+      </textarea>
+
+      <button
+        onclick="checkout()"
+        class="pink text-white w-full py-3 rounded-lg font-bold">
+        Pesan Sekarang via WhatsApp
+      </button>
+
+      <button
+        onclick="closeCart()"
+        class="bg-gray-200 w-full py-3 rounded-lg">
+        Lanjut Belanja
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-pink-100 text-center p-8 mt-10">
+  <h2 class="text-2xl font-bold text-pink-700">
+    Lasmi's Collection
+  </h2>
+
+  <p class="text-gray-600 mt-2">
+    Terima kasih sudah mengunjungi toko kami ❤️
+  </p>
+
+  <p class="text-sm text-gray-500 mt-4">
+    © 2026 Lasmi's Collection. All Rights Reserved.
+  </p>
+</footer>
+
+
+<!-- LOGIKA JAVASCRIPT -->
+<script>
+
+// URL GOOGLE APPS SCRIPT DAN NOMOR WHATSAPP ADMIN
+const API_URL = "
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lasmi's Collection - Toko Online</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #fff8fa;
+}
+.pink {
+  background: #e879a5;
+}
+.pink-text {
+  color: #d65389;
+}
+.product-card {
+  transition: .3s;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+}
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="bg-white shadow-md sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto p-4 flex justify-between items-center gap-3">
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-pink-600">
+        Lasmi's Collection
+      </h1>
+      <p class="text-xs text-gray-500">Belanja mudah dan praktis ❤️</p>
+    </div>
+
+    <button onclick="showCart()"
+      class="pink text-white px-4 py-2 rounded-full">
+      🛒 Keranjang (<span id="cartCount">0</span>)
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="text-center py-16 px-4"
+  style="background:linear-gradient(135deg,#fce7f0,#f9c9dc)">
+  <h2 class="text-3xl md:text-5xl font-bold text-pink-800">
+    Welcome to Lasmi's Collection
+  </h2>
+
+  <p class="mt-4 text-gray-700">
+    Temukan berbagai produk favoritmu dengan harga terjangkau!
+  </p>
+
+  <a href="#produk"
+    class="inline-block mt-6 bg-pink-600 text-white px-7 py-3 rounded-full">
+    Belanja Sekarang
+  </a>
+</section>
+
+<!-- KEUNGGULAN -->
+<section class="max-w-6xl mx-auto grid grid-cols-3 gap-3 px-4 py-8 text-center">
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-2xl">🛍️</div>
+    <b class="text-sm">Banyak Pilihan</b>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-2xl">💰</div>
+    <b class="text-sm">Harga Terjangkau</b>
+  </div>
+
+  <div class="bg-white rounded-xl p-4 shadow-sm">
+    <div class="text-2xl">📱</div>
+    <b class="text-sm">Pesan via WA</b>
+  </div>
+</section>
+
+<!-- KATALOG PRODUK -->
+<section id="produk" class="max-w-7xl mx-auto px-4 py-8">
+
+  <h2 class="text-3xl font-bold text-center text-pink-700 mb-2">
+    Katalog Produk
+  </h2>
+
+  <p class="text-center text-gray-500 mb-7">
+    Pilih produk yang kamu inginkan!
+  </p>
+
+  <!-- PENCARIAN -->
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="🔍 Cari nama produk..."
+    oninput="displayProducts()"
+    class="w-full p-3 border rounded-xl mb-4 bg-white"
+  >
+
+  <!-- FILTER -->
+  <div class="flex flex-wrap justify-center gap-2 mb-7">
+    <button onclick="setCategory('semua')" class="filter-btn pink text-white px-4 py-2 rounded-full">
+      Semua
+    </button>
+
+    <button onclick="setCategory('makanan')" class="filter-btn bg-white px-4 py-2 rounded-full">
+      Makanan
+    </button>
+
+    <button onclick="setCategory('minuman')" class="filter-btn bg-white px-4 py-2 rounded-full">
+      Minuman
+    </button>
+
+    <button onclick="setCategory('pakaian')" class="filter-btn bg-white px-4 py-2 rounded-full">
+      Pakaian
+    </button>
+
+    <button onclick="setCategory('aksesoris')" class="filter-btn bg-white px-4 py-2 rounded-full">
+      Aksesoris
+    </button>
+  </div>
+
+  <p id="productCount" class="text-sm text-gray-500 mb-4"></p>
+
+  <div id="productList"
+    class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+  </div>
+
+</section>
+
+<!-- KERANJANG -->
+<div id="cartModal"
+  class="hidden fixed inset-0 bg-black/50 z-50 p-3 overflow-y-auto">
+
+  <div class="bg-white max-w-lg mx-auto mt-8 rounded-2xl p-5">
+
+    <div class="flex justify-between items-center">
+      <h2 class="text-2xl font-bold text-pink-600">
+        🛒 Keranjang Belanja
+      </h2>
+
+      <button onclick="closeCart()" class="text-xl">✖</button>
+    </div>
+
+    <div id="cartItems" class="my-5"></div>
+
+    <div class="border-t pt-4">
+      <div class="flex justify-between text-lg font-bold">
+        <span>Total Belanja</span>
+        <span class="text-pink-600">
+          Rp <span id="total">0</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- DATA PEMBELI -->
+    <div class="mt-5 space-y-3">
+      <h3 class="font-bold text-lg">Data Pembeli</h3>
+
+      <input
+        type="text"
+        id="nama"
+        placeholder="Nama lengkap"
+        class="border p-3 w-full rounded-lg"
+      >
+
+      <input
+        type="tel"
+        id="telepon"
+        placeholder="Nomor WhatsApp pembeli"
+        class="border p-3 w-full rounded-lg"
+      >
+
+      <textarea
+        id="alamat"
+        placeholder="Alamat lengkap pengiriman"
+        class="border p-3 w-full rounded-lg"
+        rows="3">
+      </textarea>
+
+      <textarea
+        id="catatan"
+        placeholder="Catatan pesanan (opsional)"
+        class="border p-3 w-full rounded-lg"
+        rows="2">
+      </textarea>
+
+      <button
+        onclick="checkout()"
+        class="pink text-white w-full py-3 rounded-lg font-bold">
+        Pesan Sekarang via WhatsApp
+      </button>
+
+      <button
+        onclick="closeCart()"
+        class="bg-gray-200 w-full py-3 rounded-lg">
+        Lanjut Belanja
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-pink-100 text-center p-8 mt-10">
+  <h2 class="text-2xl font-bold text-pink-700">
+    Lasmi's Collection
+  </h2>
+
+  <p class="text-gray-600 mt-2">
+    Terima kasih sudah mengunjungi toko kami ❤️
+  </p>
+
+  <p class="text-sm text-gray-500 mt-4">
+    © 2026 Lasmi's Collection. All Rights Reserved.
+  </p>
+</footer>
+
+
+<!-- LOGIKA JAVASCRIPT -->
+<script>
+
+// URL GOOGLE APPS SCRIPT DAN NOMOR WHATSAPP ADMIN
+const API_URL = "https://script.google.com/macros/s/AKfycbyrODyiLc5JSCLG2rytIkAacwQt8diVVK7jDWVRmCu1WkD2oBJqJl6w9xJg4t3Kqjs0/exec";
+
+const WA_ADMIN = "6287898285714";
+
+
+// DATA 20 PRODUK
+const products = [
+
+{id:1,name:"Burger",category:"makanan",price:15000,stock:25,image:"https://images.pexels.com/photos/36554232/pexels-photo-36554232.jpeg",description:"Roti isi daging, sayur, dan saus."},
+
+{id:2,name:"Kaos Pendek Putih",category:"pakaian",price:45000,stock:20,image:"https://images.pexels.com/photos/13811774/pexels-photo-13811774.jpeg",description:"Kaos berwarna putih dengan lengan pendek."},
+
+{id:3,name:"Pizza",category:"makanan",price:35000,stock:15,image:"https://images.pexels.com/photos/31969433/pexels-photo-31969433.jpeg",description:"Roti panggang dengan topping keju dan saus."},
+
+{id:4,name:"Donat",category:"makanan",price:5000,stock:30,image:"https://images.pexels.com/photos/37284051/pexels-photo-37284051.jpeg",description:"Kue berbentuk bulat dengan berbagai rasa."},
+
+{id:5,name:"Es Cream Matcha",category:"minuman",price:12000,stock:25,image:"https://images.pexels.com/photos/4540356/pexels-photo-4540356.jpeg",description:"Es krim dengan rasa teh hijau."},
+
+{id:6,name:"Basreng",category:"makanan",price:8000,stock:30,image:"https://images.pexels.com/photos/12596334/pexels-photo-12596334.jpeg",description:"Cemilan bakso goreng yang renyah dan gurih."},
+
+{id:7,name:"Keripik Singkong",category:"makanan",price:10000,stock:25,image:"https://images.pexels.com/photos/36886582/pexels-photo-36886582.jpeg",description:"Cemilan renyah yang terbuat dari singkong."},
+
+{id:8,name:"Seblak",category:"makanan",price:15000,stock:20,image:"https://images.pexels.com/photos/11461699/pexels-photo-11461699.jpeg",description:"Makanan pedas dengan kerupuk dan bumbu khas."},
+
+{id:9,name:"Mie Ayam",category:"makanan",price:12000,stock:20,image:"https://images.pexels.com/photos/34834548/pexels-photo-34834548.jpeg",description:"Mie dengan topping ayam dan sayuran."},
+
+{id:10,name:"Bakso",category:"makanan",price:15000,stock:20,image:"https://images.pexels.com/photos/37105556/pexels-photo-37105556.jpeg",description:"Makanan berbentuk bulat dari olahan daging."},
+
+{id:11,name:"Sosis Bakar",category:"makanan",price:10000,stock:25,image:"https://images.pexels.com/photos/4055116/pexels-photo-4055116.jpeg",description:"Sosis yang dibakar dengan bumbu."},
+
+{id:12,name:"Roti Bakar",category:"makanan",price:12000,stock:20,image:"https://images.pexels.com/photos/10066799/pexels-photo-10066799.jpeg",description:"Roti panggang dengan berbagai pilihan rasa."},
+
+{id:13,name:"Es Teh",category:"minuman",price:5000,stock:30,image:"https://images.pexels.com/photos/38030756/pexels-photo-38030756.jpeg",description:"Minuman teh dingin yang menyegarkan."},
+
+{id:14,name:"Kopi Susu",category:"minuman",price:12000,stock:20,image:"https://images.pexels.com/photos/29794454/pexels-photo-29794454.jpeg",description:"Minuman kopi yang dicampur dengan susu."},
+
+{id:15,name:"Jus Alpukat",category:"minuman",price:10000,stock:15,image:"https://images.pexels.com/photos/32874142/pexels-photo-32874142.jpeg",description:"Minuman segar dari buah alpukat."},
+
+{id:16,name:"Martabak",category:"makanan",price:45000,stock:15,image:"https://images.pexels.com/photos/3959527/pexels-photo-3959527.jpeg",description:"Makanan dengan berbagai pilihan isian dan rasa."},
+
+{id:17,name:"Hoodie",category:"pakaian",price:120000,stock:10,image:"https://images.pexels.com/photos/15526203/pexels-photo-15526203.jpeg",description:"Pakaian lengan panjang yang memiliki penutup kepala."},
+
+{id:18,name:"Hijab Pashmina",category:"pakaian",price:35000,stock:20,image:"https://images.pexels.com/photos/29671432/pexels-photo-29671432.jpeg",description:"Kerudung panjang yang mudah dibentuk."},
+
+{id:19,name:"Totebag",category:"aksesoris",price:25000,stock:15,image:"https://images.pexels.com/photos/19245662/pexels-photo-19245662.jpeg",description:"Tas sederhana yang praktis digunakan."},
+
+{id:20,name:"Jam Tangan",category:"aksesoris",price:75000,stock:10,image:"https://images.pexels.com/photos/3656125/pexels-photo-3656125.jpeg",description:"Aksesori untuk melihat waktu."}
+
+];
+
+
+// VARIABEL KERANJANG
+let cart = [];
+let currentCategory = "semua";
+
+
+// FORMAT RUPIAH
+function rupiah(number) {
+  return number.toLocaleString("id-ID");
+}
+
+
+// TAMPILKAN PRODUK
+function displayProducts() {
+
+  const keyword = document.getElementById("searchInput")
+    .value.toLowerCase();
+
+  const filtered = products.filter(p => {
+
+    const matchName = p.name.toLowerCase().includes(keyword);
+
+    const matchCategory =
+      currentCategory === "semua" ||
+      p.category === currentCategory;
+
+    return matchName && matchCategory;
+  });
+
+  document.getElementById("productCount").innerText =
+    filtered.length + " produk ditemukan";
+
+  document.getElementById("productList").innerHTML =
+    filtered.map(p => `
+
+      <div class="product-card bg-white rounded-xl shadow overflow-hidden">
+
+        <img
+          src="${p.image}"
+          alt="${p.name}"
+          loading="lazy"
+          onerror="this.src='https://placehold.co/400x400/fce7f0/9d426b?text=Produk'"
+          class="w-full h-40 md:h-48 object-cover"
+        >
+
+        <div class="p-3">
+
+          <span class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full">
+            ${p.category}
+          </span>
+
+          <h3 class="font-bold mt-2">
+            ${p.name}
+          </h3>
+
+          <p class="text-gray-500 text-xs mt-1">
+            ${p.description}
+          </p>
+
+          <p class="text-pink-600 font-bold mt-3">
+            Rp ${rupiah(p.price)}
+          </p>
+
+          <p class="text-xs text-gray-500 mt-1">
+            Stok: ${p.stock}
+          </p>
+
+          <button
+            onclick="addCart(${p.id})"
+            ${p.stock <= 0 ? "disabled" : ""}
+            class="pink text-white w-full py-2 mt-3 rounded-lg">
+
+            + Keranjang
+
+          </button>
+
+        </div>
+      </div>
+
+    `).join("");
+
+}
+
+
+// FILTER KATEGORI
+function setCategory(category) {
+
+  currentCategory = category;
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.classList.remove("pink", "text-white");
+    btn.classList.add("bg-white");
+  });
+
+  event.currentTarget.classList.add("pink", "text-white");
+  event.currentTarget.classList.remove("bg-white");
+
+  displayProducts();
+}
+
+
+// TAMBAH PRODUK
+function addCart(id) {
+
+  const product = products.find(p => p.id === id);
+
+  const existing = cart.find(item => item.id === id);
+
+  const currentQty = existing ? existing.qty : 0;
+
+  if (currentQty >= product.stock) {
+    alert("Jumlah melebihi stok yang tersedia!");
+    return;
+  }
+
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({...product, qty:1});
+  }
+
+  updateCart();
+
+  alert(product.name + " berhasil ditambahkan ke keranjang!");
+}
+
+
+// TAMBAH JUMLAH
+function increaseQty(id) {
+
+  const item = cart.find(p => p.id === id);
+
+  if (item.qty >= item.stock) {
+    alert("Stok produk tidak mencukupi!");
+    return;
+  }
+
+  item.qty++;
+  updateCart();
+}
+
+
+// KURANGI JUMLAH
+function decreaseQty(id) {
+
+  const item = cart.find(p => p.id === id);
+
+  item.qty--;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(p => p.id !== id);
+  }
+
+  updateCart();
+}
+
+
+// HAPUS PRODUK
+function removeItem(id) {
+
+  cart = cart.filter(p => p.id !== id);
+
+  updateCart();
+}
+
+
+// UPDATE KERANJANG
+function updateCart() {
+
+  let total = 0;
+  let count = 0;
+
+  document.getElementById("cartItems").innerHTML =
+    cart.map(item => {
+
+      total += item.price * item.qty;
+      count += item.qty;
+
+      return `
+
+        <div class="flex gap-3 items-center border-b py-3">
+
+          <img src="${item.image}"
+            onerror="this.style.display='none'"
+            class="w-16 h-16 object-cover rounded-lg">
+
+          <div class="flex-1">
+
+            <b>${item.name}</b>
+
+            <p class="text-pink-600 text-sm">
+              Rp ${rupiah(item.price)}
+            </p>
+
+            <div class="flex items-center gap-3 mt-2">
+
+              <button onclick="decreaseQty(${item.id})"
+                class="bg-gray-200 px-3 py-1 rounded">
+                -
+              </button>
+
+              <span>${item.qty}</span>
+
+              <button onclick="increaseQty(${item.id})"
+                class="bg-pink-100 px-3 py-1 rounded">
+                +
+              </button>
+
+            </div>
+
+          </div>
+
+          <button onclick="removeItem(${item.id})"
+            class="text-red-500 text-sm">
+            Hapus
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+  if (cart.length === 0) {
+    document.getElementById("cartItems").innerHTML =
+      '<p class="text-center text-gray-500 py-5">Keranjang masih kosong.</p>';
+  }
+
+  document.getElementById("cartCount").innerText = count;
+  document.getElementById("total").innerText = rupiah(total);
+
+}
+
+
+// BUKA KERANJANG
+function showCart() {
+
+  updateCart();
+
+  document.getElementById("cartModal")
+    .classList.remove("hidden");
+
+}
+
+
+// TUTUP KERANJANG
+function closeCart() {
+
+  document.getElementById("cartModal")
+    .classList.add("hidden");
+
+}
+
+
+// CHECKOUT
+function checkout() {
+
+  if (cart.length === 0) {
+    alert("Keranjang masih kosong!");
+    return;
+  }
+
+  const nama = document.getElementById("nama").value.trim();
+  const telepon = document.getElementById("telepon").value.trim();
+  const alamat = document.getElementById("alamat").value.trim();
+  const catatan = document.getElementById("catatan").value.trim();
+
+  if (!nama || !telepon || !alamat) {
+    alert("Silakan lengkapi nama, nomor WhatsApp, dan alamat!");
+    return;
+  }
+
+  if (!/^\+?[0-9]{9,15}$/.test(telepon)) {
+    alert("Masukkan nomor WhatsApp yang benar!");
+    return;
+  }
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.qty, 0
+  );
+
+  const order = {
+    tanggal: new Date().toISOString(),
+    nama: nama,
+    telepon: telepon,
+    alamat: alamat,
+    catatan: catatan,
+    produk: cart.map(item => ({
+      id: item.id,
+      nama: item.name,
+      harga: item.price,
+      jumlah: item.qty,
+      subtotal: item.price * item.qty
+    })),
+    total: total,
+    status: "Menunggu Konfirmasi"
+  };
+
+
+  // MEMBUAT PESAN WHATSAPP
+  let pesan =
+    "HALO LASMI'S COLLECTION ❤️\n\n" +
+    "Saya ingin memesan produk:\n\n";
+
+  order.produk.forEach((item, index) => {
+
+    pesan +=
+      (index + 1) + ". " +
+      item.nama + "\n" +
+      "Jumlah: " + item.jumlah + "\n" +
+      "Harga: Rp " + rupiah(item.harga) + "\n" +
+      "Subtotal: Rp " + rupiah(item.subtotal) +
+      "\n\n";
+
+  });
+
+  pesan +=
+    "TOTAL: Rp " + rupiah(total) +
+    "\n\nNama: " + nama +
+    "\nWhatsApp: " + telepon +
+    "\nAlamat: " + alamat +
+    "\nCatatan: " + (catatan || "-") +
+    "\n\nMohon konfirmasi pesanan saya. Terima kasih ❤️";
+
+
+  // BUKA WHATSAPP ADMIN
+  const waURL =
+    "https://wa.me/" + WA_ADMIN +
+    "?text=" + encodeURIComponent(pesan);
+
+  window.open(waURL, "_blank");
+
+
+  // KIRIM DATA PESANAN KE GOOGLE APPS SCRIPT
+  if (
+    API_URL &&
+    API_URL !== "MASUKKAN_URL_GOOGLE_APPS_SCRIPT_DISINI"
+  ) {
+
+    fetch(API_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(order)
+    }).catch(error => {
+      console.error("Pengiriman data gagal:", error);
+    });
+
+  } else {
+
+    console.warn("URL Google Apps Script belum dimasukkan.");
+
+  }
+
+
+  alert("Pesanan disiapkan! Silakan lanjutkan konfirmasi melalui WhatsApp.");
+
+  cart = [];
+  updateCart();
+  closeCart();
+
+  document.getElementById("nama").value = "";
+  document.getElementById("telepon").value = "";
+  document.getElementById("alamat").value = "";
+  document.getElementById("catatan").value = "";
+
+}
+
+
+// JALANKAN WEBSITE
+displayProducts();
+updateCart();
+
+</script>
+
+</body>
+</html>
+";
+
+const WA_ADMIN = "6281234567890";
+
+
+// DATA 20 PRODUK
+const products = [
+
+{id:1,name:"Burger",category:"makanan",price:15000,stock:25,image:"https://images.pexels.com/photos/36554232/pexels-photo-36554232.jpeg",description:"Roti isi daging, sayur, dan saus."},
+
+{id:2,name:"Kaos Pendek Putih",category:"pakaian",price:45000,stock:20,image:"https://images.pexels.com/photos/13811774/pexels-photo-13811774.jpeg",description:"Kaos berwarna putih dengan lengan pendek."},
+
+{id:3,name:"Pizza",category:"makanan",price:35000,stock:15,image:"https://images.pexels.com/photos/31969433/pexels-photo-31969433.jpeg",description:"Roti panggang dengan topping keju dan saus."},
+
+{id:4,name:"Donat",category:"makanan",price:5000,stock:30,image:"https://images.pexels.com/photos/37284051/pexels-photo-37284051.jpeg",description:"Kue berbentuk bulat dengan berbagai rasa."},
+
+{id:5,name:"Es Cream Matcha",category:"minuman",price:12000,stock:25,image:"https://images.pexels.com/photos/4540356/pexels-photo-4540356.jpeg",description:"Es krim dengan rasa teh hijau."},
+
+{id:6,name:"Basreng",category:"makanan",price:8000,stock:30,image:"https://images.pexels.com/photos/12596334/pexels-photo-12596334.jpeg",description:"Cemilan bakso goreng yang renyah dan gurih."},
+
+{id:7,name:"Keripik Singkong",category:"makanan",price:10000,stock:25,image:"https://images.pexels.com/photos/36886582/pexels-photo-36886582.jpeg",description:"Cemilan renyah yang terbuat dari singkong."},
+
+{id:8,name:"Seblak",category:"makanan",price:15000,stock:20,image:"https://images.pexels.com/photos/11461699/pexels-photo-11461699.jpeg",description:"Makanan pedas dengan kerupuk dan bumbu khas."},
+
+{id:9,name:"Mie Ayam",category:"makanan",price:12000,stock:20,image:"https://images.pexels.com/photos/34834548/pexels-photo-34834548.jpeg",description:"Mie dengan topping ayam dan sayuran."},
+
+{id:10,name:"Bakso",category:"makanan",price:15000,stock:20,image:"https://images.pexels.com/photos/37105556/pexels-photo-37105556.jpeg",description:"Makanan berbentuk bulat dari olahan daging."},
+
+{id:11,name:"Sosis Bakar",category:"makanan",price:10000,stock:25,image:"https://images.pexels.com/photos/4055116/pexels-photo-4055116.jpeg",description:"Sosis yang dibakar dengan bumbu."},
+
+{id:12,name:"Roti Bakar",category:"makanan",price:12000,stock:20,image:"https://images.pexels.com/photos/10066799/pexels-photo-10066799.jpeg",description:"Roti panggang dengan berbagai pilihan rasa."},
+
+{id:13,name:"Es Teh",category:"minuman",price:5000,stock:30,image:"https://images.pexels.com/photos/38030756/pexels-photo-38030756.jpeg",description:"Minuman teh dingin yang menyegarkan."},
+
+{id:14,name:"Kopi Susu",category:"minuman",price:12000,stock:20,image:"https://images.pexels.com/photos/29794454/pexels-photo-29794454.jpeg",description:"Minuman kopi yang dicampur dengan susu."},
+
+{id:15,name:"Jus Alpukat",category:"minuman",price:10000,stock:15,image:"https://images.pexels.com/photos/32874142/pexels-photo-32874142.jpeg",description:"Minuman segar dari buah alpukat."},
+
+{id:16,name:"Martabak",category:"makanan",price:45000,stock:15,image:"https://images.pexels.com/photos/3959527/pexels-photo-3959527.jpeg",description:"Makanan dengan berbagai pilihan isian dan rasa."},
+
+{id:17,name:"Hoodie",category:"pakaian",price:120000,stock:10,image:"https://images.pexels.com/photos/15526203/pexels-photo-15526203.jpeg",description:"Pakaian lengan panjang yang memiliki penutup kepala."},
+
+{id:18,name:"Hijab Pashmina",category:"pakaian",price:35000,stock:20,image:"https://images.pexels.com/photos/29671432/pexels-photo-29671432.jpeg",description:"Kerudung panjang yang mudah dibentuk."},
+
+{id:19,name:"Totebag",category:"aksesoris",price:25000,stock:15,image:"https://images.pexels.com/photos/19245662/pexels-photo-19245662.jpeg",description:"Tas sederhana yang praktis digunakan."},
+
+{id:20,name:"Jam Tangan",category:"aksesoris",price:75000,stock:10,image:"https://images.pexels.com/photos/3656125/pexels-photo-3656125.jpeg",description:"Aksesori untuk melihat waktu."}
+
+];
+
+
+// VARIABEL KERANJANG
+let cart = [];
+let currentCategory = "semua";
+
+
+// FORMAT RUPIAH
+function rupiah(number) {
+  return number.toLocaleString("id-ID");
+}
+
+
+// TAMPILKAN PRODUK
+function displayProducts() {
+
+  const keyword = document.getElementById("searchInput")
+    .value.toLowerCase();
+
+  const filtered = products.filter(p => {
+
+    const matchName = p.name.toLowerCase().includes(keyword);
+
+    const matchCategory =
+      currentCategory === "semua" ||
+      p.category === currentCategory;
+
+    return matchName && matchCategory;
+  });
+
+  document.getElementById("productCount").innerText =
+    filtered.length + " produk ditemukan";
+
+  document.getElementById("productList").innerHTML =
+    filtered.map(p => `
+
+      <div class="product-card bg-white rounded-xl shadow overflow-hidden">
+
+        <img
+          src="${p.image}"
+          alt="${p.name}"
+          loading="lazy"
+          onerror="this.src='https://placehold.co/400x400/fce7f0/9d426b?text=Produk'"
+          class="w-full h-40 md:h-48 object-cover"
+        >
+
+        <div class="p-3">
+
+          <span class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full">
+            ${p.category}
+          </span>
+
+          <h3 class="font-bold mt-2">
+            ${p.name}
+          </h3>
+
+          <p class="text-gray-500 text-xs mt-1">
+            ${p.description}
+          </p>
+
+          <p class="text-pink-600 font-bold mt-3">
+            Rp ${rupiah(p.price)}
+          </p>
+
+          <p class="text-xs text-gray-500 mt-1">
+            Stok: ${p.stock}
+          </p>
+
+          <button
+            onclick="addCart(${p.id})"
+            ${p.stock <= 0 ? "disabled" : ""}
+            class="pink text-white w-full py-2 mt-3 rounded-lg">
+
+            + Keranjang
+
+          </button>
+
+        </div>
+      </div>
+
+    `).join("");
+
+}
+
+
+// FILTER KATEGORI
+function setCategory(category) {
+
+  currentCategory = category;
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.classList.remove("pink", "text-white");
+    btn.classList.add("bg-white");
+  });
+
+  event.currentTarget.classList.add("pink", "text-white");
+  event.currentTarget.classList.remove("bg-white");
+
+  displayProducts();
+}
+
+
+// TAMBAH PRODUK
+function addCart(id) {
+
+  const product = products.find(p => p.id === id);
+
+  const existing = cart.find(item => item.id === id);
+
+  const currentQty = existing ? existing.qty : 0;
+
+  if (currentQty >= product.stock) {
+    alert("Jumlah melebihi stok yang tersedia!");
+    return;
+  }
+
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({...product, qty:1});
+  }
+
+  updateCart();
+
+  alert(product.name + " berhasil ditambahkan ke keranjang!");
+}
+
+
+// TAMBAH JUMLAH
+function increaseQty(id) {
+
+  const item = cart.find(p => p.id === id);
+
+  if (item.qty >= item.stock) {
+    alert("Stok produk tidak mencukupi!");
+    return;
+  }
+
+  item.qty++;
+  updateCart();
+}
+
+
+// KURANGI JUMLAH
+function decreaseQty(id) {
+
+  const item = cart.find(p => p.id === id);
+
+  item.qty--;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(p => p.id !== id);
+  }
+
+  updateCart();
+}
+
+
+// HAPUS PRODUK
+function removeItem(id) {
+
+  cart = cart.filter(p => p.id !== id);
+
+  updateCart();
+}
+
+
+// UPDATE KERANJANG
+function updateCart() {
+
+  let total = 0;
+  let count = 0;
+
+  document.getElementById("cartItems").innerHTML =
+    cart.map(item => {
+
+      total += item.price * item.qty;
+      count += item.qty;
+
+      return `
+
+        <div class="flex gap-3 items-center border-b py-3">
+
+          <img src="${item.image}"
+            onerror="this.style.display='none'"
+            class="w-16 h-16 object-cover rounded-lg">
+
+          <div class="flex-1">
+
+            <b>${item.name}</b>
+
+            <p class="text-pink-600 text-sm">
+              Rp ${rupiah(item.price)}
+            </p>
+
+            <div class="flex items-center gap-3 mt-2">
+
+              <button onclick="decreaseQty(${item.id})"
+                class="bg-gray-200 px-3 py-1 rounded">
+                -
+              </button>
+
+              <span>${item.qty}</span>
+
+              <button onclick="increaseQty(${item.id})"
+                class="bg-pink-100 px-3 py-1 rounded">
+                +
+              </button>
+
+            </div>
+
+          </div>
+
+          <button onclick="removeItem(${item.id})"
+            class="text-red-500 text-sm">
+            Hapus
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+  if (cart.length === 0) {
+    document.getElementById("cartItems").innerHTML =
+      '<p class="text-center text-gray-500 py-5">Keranjang masih kosong.</p>';
+  }
+
+  document.getElementById("cartCount").innerText = count;
+  document.getElementById("total").innerText = rupiah(total);
+
+}
+
+
+// BUKA KERANJANG
+function showCart() {
+
+  updateCart();
+
+  document.getElementById("cartModal")
+    .classList.remove("hidden");
+
+}
+
+
+// TUTUP KERANJANG
+function closeCart() {
+
+  document.getElementById("cartModal")
+    .classList.add("hidden");
+
+}
+
+
+// CHECKOUT
+function checkout() {
+
+  if (cart.length === 0) {
+    alert("Keranjang masih kosong!");
+    return;
+  }
+
+  const nama = document.getElementById("nama").value.trim();
+  const telepon = document.getElementById("telepon").value.trim();
+  const alamat = document.getElementById("alamat").value.trim();
+  const catatan = document.getElementById("catatan").value.trim();
+
+  if (!nama || !telepon || !alamat) {
+    alert("Silakan lengkapi nama, nomor WhatsApp, dan alamat!");
+    return;
+  }
+
+  if (!/^\+?[0-9]{9,15}$/.test(telepon)) {
+    alert("Masukkan nomor WhatsApp yang benar!");
+    return;
+  }
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * item.qty, 0
+  );
+
+  const order = {
+    tanggal: new Date().toISOString(),
+    nama: nama,
+    telepon: telepon,
+    alamat: alamat,
+    catatan: catatan,
+    produk: cart.map(item => ({
+      id: item.id,
+      nama: item.name,
+      harga: item.price,
+      jumlah: item.qty,
+      subtotal: item.price * item.qty
+    })),
+    total: total,
+    status: "Menunggu Konfirmasi"
+  };
+
+
+  // MEMBUAT PESAN WHATSAPP
+  let pesan =
+    "HALO LASMI'S COLLECTION ❤️\n\n" +
+    "Saya ingin memesan produk:\n\n";
+
+  order.produk.forEach((item, index) => {
+
+    pesan +=
+      (index + 1) + ". " +
+      item.nama + "\n" +
+      "Jumlah: " + item.jumlah + "\n" +
+      "Harga: Rp " + rupiah(item.harga) + "\n" +
+      "Subtotal: Rp " + rupiah(item.subtotal) +
+      "\n\n";
+
+  });
+
+  pesan +=
+    "TOTAL: Rp " + rupiah(total) +
+    "\n\nNama: " + nama +
+    "\nWhatsApp: " + telepon +
+    "\nAlamat: " + alamat +
+    "\nCatatan: " + (catatan || "-") +
+    "\n\nMohon konfirmasi pesanan saya. Terima kasih ❤️";
+
+
+  // BUKA WHATSAPP ADMIN
+  const waURL =
+    "https://wa.me/" + WA_ADMIN +
+    "?text=" + encodeURIComponent(pesan);
+
+  window.open(waURL, "_blank");
+
+
+  // KIRIM DATA PESANAN KE GOOGLE APPS SCRIPT
+  if (
+    API_URL &&
+    API_URL !== "MASUKKAN_URL_GOOGLE_APPS_SCRIPT_DISINI"
+  ) {
+
+    fetch(API_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(order)
+    }).catch(error => {
+      console.error("Pengiriman data gagal:", error);
+    });
+
+  } else {
+
+    console.warn("URL Google Apps Script belum dimasukkan.");
+
+  }
+
+
+  alert("Pesanan disiapkan! Silakan lanjutkan konfirmasi melalui WhatsApp.");
+
+  cart = [];
+  updateCart();
+  closeCart();
+
+  document.getElementById("nama").value = "";
+  document.getElementById("telepon").value = "";
+  document.getElementById("alamat").value = "";
+  document.getElementById("catatan").value = "";
+
+}
+
+
+// JALANKAN WEBSITE
+displayProducts();
+updateCart();
+
+</script>
+
+</body>
+</html>
